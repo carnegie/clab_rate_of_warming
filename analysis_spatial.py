@@ -1,3 +1,24 @@
+"""
+
+A few variables to calculate:
+
+1. Maximum absolute temperature
+2. Year of maximum absolute temperature
+3. Maximum rate of change of temperature
+4. Year of maximum rate of change of temperature
+
+
+Maybe for each model, create 1 file to store all four variables:
+
+    tas = (250, 64, 128)
+    roc_tas = (250-31, 64, 128)
+
+"""
+
+
+
+
+
 from SUB_Class_CMIP6 import CMIP6_models
 from SUB_Class_CMIP6 import set_class_instance
 from Info_func import info_func
@@ -24,22 +45,11 @@ from matplotlib.colors import LinearSegmentedColormap
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def analysis_spatial(scenario_list):
+
+
+    #### A few variables to calculate:
+
 
 
 
