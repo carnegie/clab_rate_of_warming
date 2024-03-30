@@ -70,7 +70,8 @@ def analysis_spatial(scenario_list):
 
                 for i in range(64):
                     for j in range(128):
-                        tas_ij, roc_tas_ij = separate_abs_roc(tas[:, i, j], lowpass_threshold)
+                        tas_ij[:, i, j], roc_tas_ij[:, i, j] = separate_abs_roc(tas[:, i, j], lowpass_threshold)
+
 
                 output_file_name = f'/CMIP6_spatial_results/{model_Name}_{scenario}.pickle'                
                 with open(data_path + output_file_name, 'wb') as file:
