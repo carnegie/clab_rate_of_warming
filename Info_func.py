@@ -2,11 +2,19 @@
 import scipy.signal as signal
 import numpy as np 
 import statsmodels.api as sm
+import platform
 
 def info_func():
 
     info_dict = {}
-    info_dict['data_path'] = '/Users/duanlei/Desktop/File/Research/Carnegie_projects/Collabs/Steve_shift_climate/rate_of_change/Data'
+
+    # If on linux system:
+    if platform.system() == 'Linux':
+        info_dict['data_path'] = '/carnegie/nobackup/scratch/lduan/project_data_store/clab_rate_of_warming'
+
+    # If on macOS:
+    if platform.system() == 'Darwin':
+        info_dict['data_path'] = '/Users/duanlei/Desktop/File/Research/Carnegie_projects/Collabs/Steve_shift_climate/rate_of_change/Data'
 
     return info_dict
 
