@@ -35,8 +35,8 @@ def analysis_global(scenario_list):
     xaxis = np.arange(106) + 1995
     for i in range(tas_MM.shape[0]):
         tas, roc_tas = separate_abs_roc(tas_MM[i], lowpass_threshold)
-        axs[0].plot(xaxis, tas, 'k', alpha=0.1)
-        axs[1].plot(xaxis[16:-15], roc_tas, 'k', alpha=0.1)
+        # axs[0].plot(xaxis, tas, 'grey', alpha=0.1, linewidth=0.1)
+        axs[1].plot(xaxis[16:-15], roc_tas, 'grey', alpha=0.1, linewidth=0.1)
 
     # plt.show() 
     # plt.clf() 
@@ -98,9 +98,13 @@ def analysis_global(scenario_list):
         print ()
         print (count)
         # ------------------------------------------------------------------------  
+        ensemble_mean_tas_roc = np.mean(tas_roc, axis=0)
+        print (np.max(ensemble_mean_tas_roc))
+        print (np.argmax(ensemble_mean_tas_roc))
+        print ()
         axs[0].plot(np.arange(250) + 1850, np.mean(tas_abs, axis=0), color=lc, linestyle='-')
         axs[1].plot(np.arange(250-31) + 1850 + 16, np.mean(tas_roc, axis=0), color=lc, linestyle='--') 
     
-    plt.show()
-    # plt.savefig('ssps_annual.ps')
+    # plt.show()
+    plt.savefig('ssps_annual.ps')
     plt.clf() 
