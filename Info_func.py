@@ -64,22 +64,25 @@ def lowpass_filter(var, approach, lowpass):
 
 
 
-def separate_abs_roc(var, threshold):
+def separate_abs_roc(var, threshold, window_length):
 
     #### Let's do some lowpass filtering first 
-    if threshold > 0:
-        var = lowpass_filter(var, 'butter', threshold)
+    if threshold > 0: var = lowpass_filter(var, 'butter', threshold)
 
     #### Now calculate the rate of change using a linear regression approach
     total_length = len(var)
-    window_length = 31
-    lengh_of_intervals = total_length - window_length
-    roc_var = np.zeros(lengh_of_intervals)
-    for i in range(lengh_of_intervals):
+    num_of_intervals = total_length - window_length + 1
+    roc_var = np.zeros(num_of_intervals)
+    for i in range(num_of_intervals):
         x = np.arange(window_length)
         x_const = sm.add_constant(x)
         y = var[i:i+window_length]
         model = sm.OLS(y, x_const).fit() 
         roc_var[i] = model.params[1]
+        
+    whereisnan1 = np.isnan(var)
+    var = np.ma.masked_where(whereisnan1, var)
+    whereisnan2 = np.isnan(roc_var)
+    roc_var = np.ma.masked_where(whereisnan2, roc_var)
 
     return var, roc_var

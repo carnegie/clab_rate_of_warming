@@ -8,7 +8,12 @@ import cdms2 as cdms
 import cdutil 
 import numpy as np 
 import pandas as pd
+import pickle 
+
 import matplotlib.pyplot as plt 
+
+
+
 
 
 def analysis_global(scenario_list):
@@ -17,27 +22,75 @@ def analysis_global(scenario_list):
     fig, axs = plt.subplots(2, 1, figsize = [5, 8], 
                             sharex = True, sharey = False, constrained_layout = True)
     axs = axs.ravel()
-
     info_dict = info_func()
     data_path = info_dict['data_path']
     lowpass_threshold = 10
 
 
     # ------------------------------------------------------------------------
-    #### Meinshausen et al. 2022
+    #### Reanalysis 
+    pickle_file_name = data_path + '/Reanalysis/ERA5_global_avg.pickle'
+    with open(pickle_file_name, 'rb') as f: 
+        data_ERA5 = pickle.load(f)
+    ERA5_gm_monthly = np.array(data_ERA5['gm']).reshape(-1, 12)
+    ERA5_gm = np.mean(ERA5_gm_monthly, axis=1) - 273.15
 
-    csv_file_name = data_path + '/Data_Meinshausen2022/timeseries_12Nov2021a_CR.csv'
-    data_MM = pd.read_csv(csv_file_name)
-    tas_MM = data_MM[data_MM['variable'] == 'Surface Temperature (GSAT)|MAGICCv7.5.3']
-    keys = list(data_MM.keys())
-    tas_MM = np.array(tas_MM.iloc[:, 13:])     # (4254, 106)
+    xaxis = np.arange(45) + 1979
+    axs[0].plot(xaxis, ERA5_gm, 'black', linewidth=0.5)
+    # plt.show()
+    # plt.clf() 
+    # stop 
+
+
+
+
+    # """
+    # ------------------------------------------------------------------------
+    #### AR6 scenario database 
+    csv_file_name = data_path + '/AR6_scenario_database/AR6_Scenarios_Database_World_v1.1.csv/AR6_Scenarios_Database_World_v1.1.csv'
+    data_AR6 = pd.read_csv(csv_file_name)
+    keys = list(data_AR6.keys())
+    tas_AR6 = data_AR6[data_AR6['Unit'] == 'K']
+    scenario_list = tas_AR6['Scenario'].unique()
+    tas_AR6 = np.array(tas_AR6.iloc[:, 5:])
+    whereisnan = np.isnan(tas_AR6)
+    tas_AR6 = np.ma.masked_where(whereisnan, tas_AR6)
 
     xaxis = np.arange(106) + 1995
-    for i in range(tas_MM.shape[0]):
-        tas, roc_tas = separate_abs_roc(tas_MM[i], lowpass_threshold)
-        # axs[0].plot(xaxis, tas, 'grey', alpha=0.1, linewidth=0.1)
-        axs[1].plot(xaxis[16:-15], roc_tas, 'grey', alpha=0.1, linewidth=0.1)
+    for i in range(tas_AR6.shape[0]):
+        tas, roc_tas = separate_abs_roc(tas_AR6[i], lowpass_threshold)
+        axs[0].plot(xaxis, tas, 'orange', alpha=0.1, linewidth=0.1)
+        axs[1].plot(xaxis[16:-15], roc_tas, 'orange', alpha=0.1, linewidth=0.1)
 
+    print ()
+    print ()
+    # print (data_AR6)
+    # print (keys)
+    # print (tas_AR6)
+    # print (scenario_list)
+    # print (tas_AR6)
+    print (tas_AR6.shape)
+    print () 
+    plt.show() 
+    plt.clf() 
+    stop 
+    # """
+
+
+
+
+    # # ------------------------------------------------------------------------
+    # #### Meinshausen et al. 2022
+    # csv_file_name = data_path + '/Data_Meinshausen2022/timeseries_12Nov2021a_CR.csv'
+    # data_MM = pd.read_csv(csv_file_name)
+    # tas_MM = data_MM[data_MM['variable'] == 'Surface Temperature (GSAT)|MAGICCv7.5.3']
+    # keys = list(data_MM.keys())
+    # tas_MM = np.array(tas_MM.iloc[:, 13:])     # (4254, 106)
+    # xaxis = np.arange(106) + 1995
+    # for i in range(tas_MM.shape[0]):
+    #     tas, roc_tas = separate_abs_roc(tas_MM[i], lowpass_threshold)
+    #     # axs[0].plot(xaxis, tas, 'grey', alpha=0.1, linewidth=0.1)
+    #     axs[1].plot(xaxis[16:-15], roc_tas, 'grey', alpha=0.1, linewidth=0.1)
     # plt.show() 
     # plt.clf() 
     # stop 

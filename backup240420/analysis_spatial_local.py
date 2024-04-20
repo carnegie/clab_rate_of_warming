@@ -8,6 +8,8 @@ from Info_func import info_func
 import cdms2 as cdms 
 import pickle 
 import numpy as np 
+import cdutil
+import genutil
 
 import matplotlib
 import matplotlib.pyplot as plt 
@@ -77,6 +79,22 @@ def analysis_spatial_local(scenario_list):
         map_max_global_h = tas_roc_mean[107]
         map_max_global_c = tas_roc_mean[157]
         map_max_global_f = tas_roc_mean[217]
+
+
+        # #### Calculate spatial standard deviation 
+        # # std_h = genutil.statistics.std(tas_roc_mean[107])
+        # # std_c = genutil.statistics.std(tas_roc_mean[157])
+        # # std_f = genutil.statistics.std(tas_roc_mean[217])
+        # std_h = np.std(map_max_global_h)
+        # std_c = np.std(map_max_global_c)
+        # std_f = np.std(map_max_global_f)
+        # print ()
+        # print (std_h) 
+        # print (std_c)
+        # print (std_f)
+        # print () 
+        # stop 
+
         
 
 
@@ -88,22 +106,28 @@ def analysis_spatial_local(scenario_list):
 
         #### Plot results 
         def plotP(var, col, name):
+
+            #### Normalize 
+            # var = var / np.mean(var)
+
             ax1 = plt.subplot(111, projection=ccrs.PlateCarree())
             ax1.add_feature(cfeature.COASTLINE)
             ax1.add_feature(cfeature.BORDERS)
             ax1.set_extent([-180, 180, -90, 90], crs=ccrs.PlateCarree())
-            # mp = ax1.pcolor(lon, lat, var, cmap=col, norm=colors.Normalize(vmin=-2, vmax=2), transform=ccrs.PlateCarree())
+            # mp = ax1.pcolor(lon, lat, var, cmap=col, norm=colors.Normalize(vmin=0, vmax=2), transform=ccrs.PlateCarree())
             mp = ax1.pcolor(lon, lat, var, cmap=col, transform=ccrs.PlateCarree())
             # ax1.contourf(lon, lat, mask_array_new, colors='none', hatches=['.'*5], transform=ccrs.PlateCarree())
+            #### Plot contour of 1 
+            ax1.contour(lon, lat, var, levels=[1], colors='purple', transform=ccrs.PlateCarree())
             plt.colorbar(mp, ax=ax1, extend='both', shrink=0.5, orientation='vertical')
-            # plt.show()
-            plt.savefig(name + '.ps', bbox_inches='tight') 
+            plt.show()
+            # plt.savefig(name + '.ps', bbox_inches='tight') 
             plt.clf()
 
-        # plotP(max_tas_roc, 'Reds', 'max_roc')
-        # plotP(argmax_tas_roc, 'Reds', 'year_max_roc')
+        plotP(max_tas_roc, 'Reds', 'max_roc')
+        plotP(argmax_tas_roc, 'Reds', 'year_max_roc')
 
-        plotP(map_max_global_h, 'Reds', 'map_h')
-        plotP(map_max_global_c, 'Reds', 'map_c')
-        plotP(map_max_global_f, 'Reds', 'map_f')
+        # plotP(map_max_global_h, 'Reds', 'map_h')
+        # plotP(map_max_global_c, 'Reds', 'map_c')
+        # plotP(map_max_global_f, 'Reds', 'map_f')
 
