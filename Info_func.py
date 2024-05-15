@@ -153,8 +153,6 @@ def separate_abs_roc_yty_detrend(var, year, threshold):
 
 
 
-
-
 def separate_abs_roc_sparse(var):
     year = np.array([2010,2015,2020,2030,2040,2045,2050,2053,2060,2070,2080,2090,2100])
     cubic_spline = CubicSpline(year, var)
