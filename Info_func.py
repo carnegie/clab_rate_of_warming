@@ -234,3 +234,17 @@ def get_rw_data(obs_data_path):
     ERA5_sat_adj = (ERA5_sat - ref_1981_2010)[1980-1979:]
 
     return BE_sat_adj, GISS_sat_adj, HadCRUT5_sat_adj, NOAA_sat_adj, ERA5_sat_adj
+
+
+
+
+
+def temperature_detrend(var, year, threshold):
+    if threshold > 0: 
+        # roc_detrended = lowpass_filter(roc, 'hann', threshold) 
+        raw_detrended = hann_window_new(year[1:], var, threshold)
+        halfWidth = int((threshold - 1) / 2)
+    else:
+        raw_detrended = var
+        halfWidth = 0
+    return year[halfWidth+1:-halfWidth], raw_detrended[halfWidth:-halfWidth]
